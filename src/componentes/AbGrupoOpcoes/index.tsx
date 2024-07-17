@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import styled from "styled-components";
 
 const SectionEstilizada = styled.section<{ selecionada: boolean }>`
@@ -41,12 +41,27 @@ export interface AbGrupoOpcao {
 
 export interface AbGrupoOpcoesProps {
     opcoes: AbGrupoOpcao[];
+    valorPadrao?: AbGrupoOpcao | null;
+    onChange: (opcao: AbGrupoOpcao) => void;
 }
 
-export const AbGrupoOpcoes = ({opcoes}: AbGrupoOpcoesProps) => {
+export const AbGrupoOpcoes = ({opcoes, onChange, valorPadrao}: AbGrupoOpcoesProps) => {
+    const [selecao, setSelecao] = useState<AbGrupoOpcao | null>(valorPadrao ?? null);
+
+    const aoSelecionar = (opcao: AbGrupoOpcao):void => {
+        setSelecao(opcao);
+        if(onChange){
+            onChange(opcao);
+        }
+    }
+
     return (<>
             {opcoes.map(opcao => 
-                <SectionEstilizada key={opcao.id} selecionada={false}>
+                <SectionEstilizada 
+                    onClick={()=> aoSelecionar(opcao)} 
+                    key={opcao.id} 
+                    selecionada={selecao?.id === opcao.id}
+                >
                     <header>
                         {opcao.titulo}
                     </header>
